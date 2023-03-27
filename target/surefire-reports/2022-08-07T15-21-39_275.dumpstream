@@ -1,0 +1,4 @@
+# Created at 2022-08-07T15:21:42.086
+Boot Manifest-JAR contains absolute paths in classpath 'd:\Programming\MC Plugins\LodestoneTP\lodestonetp\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+
