@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="8.39">
-<file name="D:\Programming\MC Plugins\LodestoneTP\lodestonetp\src\main\java\com\skyphi\LodestoneEvent.java">
-<error line="23" column="9" severity="error" message="&apos;if&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"/>
-<error line="39" severity="error" message="Line is longer than 120 characters (found 199)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
-<error line="39" column="183" severity="error" message="&apos;,&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"/>
-</file>
-</checkstyle>

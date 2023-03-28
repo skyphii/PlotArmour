@@ -1,8 +1,0 @@
-main: com.skyphi.App
-name: PlotArmour
-version: 1.0
-api-version: 1.19
-# commands:
-#    start:
-#       description: Starts the puzzle!
-#       usage: /<command>
