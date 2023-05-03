@@ -10,6 +10,8 @@ Designed to modify the the typical speedrunning path.
 - ~~(creeper) explosions heal~~
 - ~~blaze shoots snowballs~~
 - ~~void launch~~
+- ~~piglins flock player and throw items~~
+    - spawned wolves are automatically tamed
 - something to navigate to nether fortress
 - eyes of ender launch player towards stronghold (?)
 - silverfish are friends?

@@ -1,5 +1,7 @@
 package com.skyphi;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -8,6 +10,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
@@ -15,12 +18,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Witch;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -37,7 +42,47 @@ import org.bukkit.util.Vector;
 
 public class Events implements Listener {
 
-    private int taskPearl = -1, taskVoidLaunch = -1;
+    private int taskPearl = -1, taskVoidLaunch = -1, taskPiglin = -1;
+
+    @EventHandler
+    public void on(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        World world = player.getWorld();
+        Block block = event.getBlock();
+        Material mat = block.getType();
+        switch(mat) {
+            default:
+                break;
+            case NETHER_GOLD_ORE:
+            case GOLD_BLOCK:
+                if(world.getEnvironment() != Environment.NETHER) break;
+                if(taskPiglin != -1) return;
+                Vector inverseDirectionVec = player.getLocation().getDirection().normalize().multiply(-1);
+                Location pigSpawn = getSurfaceLoc(player.getLocation().add(inverseDirectionVec.multiply(2)));
+                Location look = player.getLocation();
+                pigSpawn.setDirection(look.subtract(pigSpawn).toVector());
+                world.playSound(pigSpawn, Sound.ENTITY_PIGLIN_ADMIRING_ITEM, SoundCategory.NEUTRAL, 1, 1);
+                Piglin piglin = (Piglin)world.spawnEntity(pigSpawn, EntityType.PIGLIN);
+                piglin.setAdult();
+                piglin.setAI(false);
+                pigSpawn.add(0, 1, 0);
+                taskPiglin = Bukkit.getScheduler().scheduleSyncRepeatingTask(App.instance, new Runnable() {
+                    int count = 0;
+                    public void run() {
+                        if(count++ >= 15) {
+                            Bukkit.getScheduler().cancelTask(taskPiglin);
+                            taskPiglin = -1;
+                            world.spawnParticle(Particle.HEART, pigSpawn, 1);
+                            piglin.remove();
+                        }
+                        ItemStack nextItem = getRandomPiglinItem();
+                        Item item = world.dropItem(pigSpawn, nextItem);
+                        item.setVelocity(look.toVector().multiply(0.1));
+                    }
+                  }, 20, 3);
+                break;
+        }
+    }
 
     @EventHandler
     public void on(ProjectileHitEvent event) {
@@ -265,6 +310,31 @@ public class Events implements Listener {
                 }, ticks);
             }
         }
+    }
+
+    // -- helpers -- //
+
+    private Material[] piglinItems = {
+        Material.COOKED_PORKCHOP, Material.IRON_NUGGET, Material.GOLDEN_CARROT,
+        Material.OBSIDIAN, Material.FIRE_CHARGE, Material.WOLF_SPAWN_EGG
+    };
+    private ItemStack getRandomPiglinItem() {
+        Random rand = new Random();
+        return new ItemStack(piglinItems[rand.nextInt(piglinItems.length)], rand.nextInt(10)+1);
+    }
+
+    private Location getSurfaceLoc(Location loc) {
+        if(loc.getBlock().getType() != Material.AIR) {
+            while(loc.getBlock().getType() != Material.AIR) {
+                loc = loc.add(0, 1, 0);
+            }
+        }else {
+            while(loc.getBlock().getType() == Material.AIR) {
+                loc = loc.subtract(0, 1, 0);
+            }
+            loc = loc.add(0, 1, 0);
+        }
+        return loc.getBlock().getLocation();
     }
 
 }
