@@ -14,7 +14,7 @@ Designed to modify the the typical speedrunning path.
     - ~~spawned wolves are automatically tamed~~
 - ~~touch fire in nether to gain flight~~
 - ~~eyes of ender launch player towards stronghold~~
-- silverfish are friends?
+- ~~silverfish are friends?~~
 - investigate plausbility of arrows bouncing between end crystals (likely will abandon this if it doesn't work out)
 - if not bouncing arrows, auto-aim. could theoretically deal damage to endcrystal/dragon when player shoots arrow (and delete arrow instantly)
 - spawn fountain of OP loot from dragon death

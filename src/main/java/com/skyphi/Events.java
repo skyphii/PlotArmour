@@ -12,6 +12,7 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderSignal;
@@ -22,6 +23,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Witch;
@@ -34,6 +36,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -156,6 +159,11 @@ public class Events implements Listener {
                     enderEyeDirection = e.getVelocity().normalize();
                 }
             }, 20);
+        }else if(entity instanceof Silverfish) {
+            Silverfish silverfish = (Silverfish)entity;
+            silverfish.setGlowing(true);
+            silverfish.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100);
+            silverfish.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0);
         }
     }
 
