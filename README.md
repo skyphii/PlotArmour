@@ -12,7 +12,7 @@ Designed to modify the the typical speedrunning path.
 - ~~void launch~~
 - ~~piglins flock player and throw items~~
     - ~~spawned wolves are automatically tamed~~
-- something to navigate to nether fortress
+- ~~touch fire in nether to gain flight~~
 - eyes of ender launch player towards stronghold (?)
 - silverfish are friends?
 - investigate plausbility of arrows bouncing between end crystals (likely will abandon this if it doesn't work out)

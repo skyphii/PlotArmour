@@ -46,6 +46,7 @@ import org.bukkit.util.Vector;
 public class Events implements Listener {
 
     private int taskPearl = -1, taskVoidLaunch = -1, taskPiglin = -1;
+    private boolean fireFlying = false;
 
     @EventHandler
     public void on(PlayerInteractEvent event) {
@@ -253,6 +254,22 @@ public class Events implements Listener {
                         }
                     }, 0, 2);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20*10, 0));
+                    break;
+                case FIRE:
+                    if(fireFlying || world.getEnvironment() != Environment.NETHER) break;
+                    fireFlying = true;
+                    player.setAllowFlight(true);
+                    player.setFlying(true);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*60, 0));
+                    Bukkit.getScheduler().runTaskLater(App.instance, new Runnable() {
+                        @Override
+                        public void run() {
+                            fireFlying = false;
+                            player.setAllowFlight(false);
+                            player.setFlying(false);
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*10, 0));
+                        }
+                    }, 20*60);
                     break;
             }
         }
