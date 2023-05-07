@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderSignal;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,6 +28,7 @@ import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -47,16 +49,20 @@ public class Events implements Listener {
 
     private int taskPearl = -1, taskVoidLaunch = -1, taskPiglin = -1;
     private boolean fireFlying = false;
+    private Vector enderEyeDirection;
 
     @EventHandler
     public void on(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         World world = player.getWorld();
-        Material itemType = event.getItem().getType();
+        ItemStack item = event.getItem();
+        if(item == null) return;
+        Material itemType = item.getType();
         switch(itemType) {
             default:
                 break;
             case WOLF_SPAWN_EGG:
+                if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
                 event.setCancelled(true);
                 event.getItem().setAmount(event.getItem().getAmount()-1);
                 Location wolfSpawn = event.getClickedBlock().getLocation().add(event.getBlockFace().getDirection());
@@ -65,6 +71,19 @@ public class Events implements Listener {
                 wolf.setOwner(player);
                 wolf.setCollarColor(DyeColor.PINK);
                 wolf.setCustomName(getRandomDogName());
+                break;
+            case ENDER_EYE:
+                if(event.getAction() != Action.RIGHT_CLICK_AIR) return;
+                Bukkit.getScheduler().runTaskLater(App.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        if(enderEyeDirection == null) return;
+                        player.setVelocity(enderEyeDirection.multiply(100));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*10, 0));
+                        player.getInventory().addItem(new ItemStack(Material.ENDER_EYE, 1));
+                        enderEyeDirection = null;
+                    }
+                }, 20*2);
                 break;
         }
     }
@@ -128,6 +147,15 @@ public class Events implements Listener {
             b.setVelocity(f.getDirection().multiply(10));
             b.setShooter(f.getShooter());
             event.setCancelled(true);
+        }else if(entity instanceof EnderSignal) {
+            EnderSignal e = (EnderSignal)entity;
+            e.setDropItem(false);
+            Bukkit.getScheduler().runTaskLater(App.instance, new Runnable() {
+                @Override
+                public void run() {
+                    enderEyeDirection = e.getVelocity().normalize();
+                }
+            }, 20);
         }
     }
 
