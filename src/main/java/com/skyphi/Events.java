@@ -14,7 +14,9 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderSignal;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -36,7 +38,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -47,6 +48,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import com.skyphi.runnables.HomingArrowRunnable;
 
 public class Events implements Listener {
 
@@ -197,6 +200,11 @@ public class Events implements Listener {
                         item.setVelocity(look.toVector().multiply(0.1));
                     }
                   }, 20, 3);
+            }
+        }else if(damager instanceof Arrow) {
+            if(entity instanceof EnderCrystal) {
+                Arrow arrow = (Arrow)world.spawnEntity(entity.getLocation(), EntityType.ARROW);
+                new HomingArrowRunnable(arrow).runTaskTimer(App.instance, 5, 1);
             }
         }
     }

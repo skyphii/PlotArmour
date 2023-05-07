@@ -15,6 +15,6 @@ Designed to modify the the typical speedrunning path.
 - ~~touch fire in nether to gain flight~~
 - ~~eyes of ender launch player towards stronghold~~
 - ~~silverfish are friends?~~
-- investigate plausbility of arrows bouncing between end crystals (likely will abandon this if it doesn't work out)
-- if not bouncing arrows, auto-aim. could theoretically deal damage to endcrystal/dragon when player shoots arrow (and delete arrow instantly)
+- ~~arrows bounce between end crystals automatically~~
+- auto-aim arrows at dragon
 - spawn fountain of OP loot from dragon death
