@@ -3,6 +3,7 @@ package com.skyphi;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -33,6 +35,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -43,6 +46,27 @@ import org.bukkit.util.Vector;
 public class Events implements Listener {
 
     private int taskPearl = -1, taskVoidLaunch = -1, taskPiglin = -1;
+
+    @EventHandler
+    public void on(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        World world = player.getWorld();
+        Material itemType = event.getItem().getType();
+        switch(itemType) {
+            default:
+                break;
+            case WOLF_SPAWN_EGG:
+                event.setCancelled(true);
+                event.getItem().setAmount(event.getItem().getAmount()-1);
+                Location wolfSpawn = event.getClickedBlock().getLocation().add(event.getBlockFace().getDirection());
+                Wolf wolf = (Wolf)world.spawnEntity(wolfSpawn, EntityType.WOLF);
+                wolf.setTamed(true);
+                wolf.setOwner(player);
+                wolf.setCollarColor(DyeColor.PINK);
+                wolf.setCustomName(getRandomDogName());
+                break;
+        }
+    }
 
     @EventHandler
     public void on(BlockBreakEvent event) {
@@ -323,6 +347,23 @@ public class Events implements Listener {
         return new ItemStack(piglinItems[rand.nextInt(piglinItems.length)], rand.nextInt(10)+1);
     }
 
+    private String[] dogNames = {"Buddy", "Bailey", "Max", "Charlie", "Lucy", "Daisy", "Molly", "Sadie", "Lola", "Zoe", 
+        "Coco", "Rosie", "Penny", "Ruby", "Maggie", "Luna", "Chloe", "Lily", "Sophie", "Stella", "Finn", "Ollie", "Toby", 
+        "Rocky", "Gus", "Teddy", "Winnie", "Eddie", "Leo", "Bentley", "Piper", "Harley", "Buster", "Milo", "Mia", "Abby", 
+        "Bella", "Roxy", "Gracie", "Cali", "Hazel", "Mocha", "Cinnamon", "Cookie", "Oreo", "Peanut", "Poppy", "Honey", 
+        "Sugar", "Pumpkin", "Maple", "Sunny", "Duke", "Bear", "Zeus", "Thor", "Apollo", "Jax", "Rocco", "Simba", "Rufus", 
+        "Murphy", "Tucker", "Harvey", "Frankie", "Gatsby", "Elvis", "Prince", "Oliver", "Scooby", "Benji", "Lassie", 
+        "Beethoven", "Baloo", "Bagheera", "Dumbo", "Felix", "Garfield", "Kermit", "Mickey", "Minnie", "Nemo", "Snoopy", 
+        "Sully", "Tarzan", "Woody", "Yogi", "Bambi", "Bolt", "Buzz", "Cinderella", "Daisy Duke", "Donald", "Dopey", "Dory", 
+        "Eeyore", "Flounder", "Gizmo", "Goofy", "Grumpy", "Happy", "Lilo", "Mater", "Meeko", "Mowgli", "Pocahontas", "Pumba", 
+        "Remy", "Sebastian", "Smoochie", "Thumper", "Tigger", "Timon", "Winnie the Pooh", "Zazu", "Alfie", "Archie", "Barney", 
+        "Brady", "Brody", "Bruno", "Cody", "Cooper", "Dexter", "Fergus", "George", "Gizmo", "Gunner", "Hank", "Hudson", "Hunter", 
+        "Jack", "Jasper", "Koda", "Lenny", "Louie", "Lucky", "Marley", "Monty", "Nash", "Nelson", "Oscar", "Otis", "Pablo"};
+    private String getRandomDogName() {
+        Random rand = new Random();
+        return dogNames[rand.nextInt(dogNames.length)];
+    }
+    
     private Location getSurfaceLoc(Location loc) {
         if(loc.getBlock().getType() != Material.AIR) {
             while(loc.getBlock().getType() != Material.AIR) {
