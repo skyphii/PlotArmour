@@ -1,5 +1,6 @@
 package com.skyphi;
 
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderSignal;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -56,6 +58,9 @@ public class Events implements Listener {
     private int taskPearl = -1, taskVoidLaunch = -1, taskPiglin = -1;
     private boolean fireFlying = false;
     private Vector enderEyeDirection;
+
+    public static boolean crystalsDead = false;
+    private Entity dragon;
 
     @EventHandler
     public void on(PlayerInteractEvent event) {
@@ -146,6 +151,7 @@ public class Events implements Listener {
     @EventHandler
     public void on(EntitySpawnEvent event) {
         Entity entity = event.getEntity();
+        World world = entity.getWorld();
         if(entity instanceof SmallFireball) {
             Fireball f = (Fireball)entity;
             Location l = f.getLocation().add(f.getDirection().multiply(20));
@@ -167,6 +173,20 @@ public class Events implements Listener {
             silverfish.setGlowing(true);
             silverfish.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100);
             silverfish.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0);
+        }else if(entity instanceof Arrow) {
+            if(world.getEnvironment() != Environment.THE_END || !Events.crystalsDead) return;
+
+            if(dragon == null) {
+                List<Entity> nearby = entity.getNearbyEntities(1000, 200, 1000);
+                nearby.forEach(e -> {
+                    if(e instanceof EnderDragon) {
+                        dragon = e;
+                        return;
+                    }
+                });
+            }
+            
+            if(dragon != null) new HomingArrowRunnable((Arrow)entity, dragon).runTaskTimer(App.instance, 5, 1);
         }
     }
 

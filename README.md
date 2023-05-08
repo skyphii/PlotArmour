@@ -16,5 +16,5 @@ Designed to modify the the typical speedrunning path.
 - ~~eyes of ender launch player towards stronghold~~
 - ~~silverfish are friends?~~
 - ~~arrows bounce between end crystals automatically~~
-- auto-aim arrows at dragon
+- ~~auto-aim arrows at dragon~~
 - spawn fountain of OP loot from dragon death

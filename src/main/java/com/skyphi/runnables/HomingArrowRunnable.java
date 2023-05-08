@@ -6,10 +6,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.bukkit.Color;
+
+import com.skyphi.Events;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EnderDragon;
 
 public class HomingArrowRunnable extends BukkitRunnable {
 
@@ -22,11 +25,18 @@ public class HomingArrowRunnable extends BukkitRunnable {
     public HomingArrowRunnable(Arrow arrow, Entity target) {
         this.arrow = arrow;
         this.target = target;
+        if(target instanceof EnderDragon) arrow.setDamage(arrow.getDamage() * 6);
     }
 
     @Override
     public void run() {
-        if(target == null) setTarget();
+        if(target == null) {
+            setTarget();
+            if(target == null) {
+                cancel();
+                return;
+            }
+        }
 
         // Block b = arrow.getAttachedBlock();
         // if(b != null) System.out.println(b.getType());
@@ -37,7 +47,7 @@ public class HomingArrowRunnable extends BukkitRunnable {
             for(int x = -1; x <= 1; x++) {
                 for(int z = -1; z <= 1; z++) {
                     Block b2 = b.getRelative(x, y, z);
-                    if(b2.getType() == Material.IRON_BARS || b2.getType() == Material.OBSIDIAN || b2.getType() == Material.BEDROCK) {
+                    if(b2.getType() != Material.END_STONE) {
                         b2.breakNaturally();
                     }
                 }
@@ -58,7 +68,10 @@ public class HomingArrowRunnable extends BukkitRunnable {
             }
         });
 
-        if(target == null) cancel();
+        if(target == null) {
+            cancel();
+            Events.crystalsDead = true;
+        }
     }
     
 }
