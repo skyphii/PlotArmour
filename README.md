@@ -17,4 +17,4 @@ Designed to modify the the typical speedrunning path.
 - ~~silverfish are friends?~~
 - ~~arrows bounce between end crystals automatically~~
 - ~~auto-aim arrows at dragon~~
-- spawn fountain of OP loot from dragon death
+- ~~spawn fountain of OP loot from dragon death~~

@@ -336,6 +336,17 @@ public class Events implements Listener {
                     }, 20*60);
                     break;
             }
+        }else if(entity instanceof EnderDragon) {
+            if(((EnderDragon)entity).getHealth() - event.getFinalDamage() <= 0) {
+                for(int i = 0; i < 10; i++) {
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(App.instance, new Runnable() {
+                        public void run() {
+                            Location loc = entity.getLocation();
+                            SpawnRandomLoot(loc);
+                        }
+                    }, 0, 10);
+                }
+            }
         }
     }
 
@@ -457,6 +468,32 @@ public class Events implements Listener {
             loc = loc.add(0, 1, 0);
         }
         return loc.getBlock().getLocation();
+    }
+
+    private Material[] loot = {
+        Material.DIAMOND, Material.EMERALD, Material.GOLD_INGOT, Material.IRON_INGOT, Material.NETHERITE_INGOT,
+        Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.GOLD_BLOCK, Material.IRON_BLOCK, Material.NETHERITE_BLOCK,
+        Material.ENCHANTED_GOLDEN_APPLE, Material.DRAGON_BREATH, Material.TOTEM_OF_UNDYING, Material.SHULKER_SHELL, Material.BEACON,
+        Material.HEART_OF_THE_SEA, Material.NAUTILUS_SHELL, Material.SCUTE, Material.NETHER_STAR, Material.ENDER_EYE,
+        Material.ENDER_PEARL, Material.PRISMARINE_SHARD, Material.PRISMARINE_CRYSTALS, Material.GLOWSTONE_DUST, Material.QUARTZ,
+        Material.LAPIS_BLOCK, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.GOLD_ORE, Material.IRON_ORE
+    };
+    private ItemStack getRandomLoot() {
+        Random rand = new Random();
+        return new ItemStack(loot[rand.nextInt(loot.length)], rand.nextInt(10)+1);
+    }
+    private void SpawnRandomLoot(Location loc) {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(App.instance, new Runnable() {
+            public void run() {
+                Item item = loc.getWorld().dropItemNaturally(loc, getRandomLoot());
+                Bukkit.getScheduler().runTaskLater(App.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        item.remove();
+                    }
+                }, 20);
+            }
+        }, 0, 8);
     }
 
 }
